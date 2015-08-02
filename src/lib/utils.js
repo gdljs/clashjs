@@ -9,6 +9,10 @@ var safeRandomMove = () => {
   return Math.random() > 0.33 ? 'move' : DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
 };
 
+var turn = (currentPosition, howMuchTurn) => {
+  var currentPositionIndex = DIRECTIONS.indexOf(currentPosition);
+  return DIRECTIONS[(currentPositionIndex + howMuchTurn) % 4];
+};
 
 var getDirection = (start, end) => {
   var diffVertical = Math.abs(start[0] - end[0]);
@@ -20,35 +24,43 @@ var getDirection = (start, end) => {
   return (start[1] - end[1] > 0) ? 'west' : 'east';
 };
 
+var fastGetDirection = (start, end) => {
+  var diffVertical = Math.abs(start[0] - end[0]);
+  // var diffHorizontal = Math.abs(start[1] - end[1]);
+
+  if (diffVertical) {
+    return (start[0] - end[0] > 0) ? 'north' : 'south';
+  }
+  return (start[1] - end[1] > 0) ? 'west' : 'east';
+};
+
 var isVisible = (originalPosition, finalPosition, direction) => {
   switch (direction) {
     case DIRECTIONS[0]:
       return originalPosition[1] === finalPosition[1] && originalPosition[0] > finalPosition[0];
-      break;
     case DIRECTIONS[1]:
       return originalPosition[0] === finalPosition[0] && originalPosition[1] < finalPosition[1];
-      break;
     case DIRECTIONS[2]:
       return originalPosition[1] === finalPosition[1] && originalPosition[0] < finalPosition[0];
-      break;
     case DIRECTIONS[3]:
       return originalPosition[0] === finalPosition[0] && originalPosition[1] > finalPosition[1];
-      break;
     default:
       break;
   }
-}
+};
 
 var canKill = (currentPlayerState, enemiesStates) => {
-  return enemiesStates.some((enemyObject, enemyIndex) => {
+  return enemiesStates.some((enemyObject) => {
     return (enemyObject.isAlive && isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
   });
-}
+};
 
 module.exports = {
   randomMove,
   getDirection,
   isVisible,
   canKill,
-  safeRandomMove
+  safeRandomMove,
+  fastGetDirection,
+  turn
 };

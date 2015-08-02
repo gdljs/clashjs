@@ -1,8 +1,32 @@
-# ClashJS
+# [ClashJS](http://javierbyte.github.io/clashjs/)
 
-![](spec_assets/screenshot.png)
+[![](spec_assets/screenshot.jpg)](http://javierbyte.github.io/clashjs/)
 
-This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
+[Demo Online](http://javierbyte.github.io/clashjs/)
+
+This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight! You can play by adding your own AI to the game!
+
+# How to run the demo.
+
+Clone the repo and then
+
+    npm install
+    npm run start
+
+Then go to `http://localhost:3000`.
+
+# How to participate.
+Add your player as specificed in [player definition](#player-definition) in
+
+    /src/players/YOU.js
+
+And then require yourself in
+
+    /src/Players.js
+
+And run the demo again. Have fun!
+
+Read the [game definitions](#game-definitions) to learn how to create your player. Have fun!
 
 # Game. Functional Spec.
 
@@ -14,8 +38,8 @@ The game is simple: we will put all the players in a battle arena, and then make
 ### Game Rules.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
-  * The current position and direction of the player.
-  * The position of all other players.
+  * The state of the player.
+  * The state of all other players.
   * A environment configuration option with:
     * Grid size.
     * The position of the ammo.
@@ -25,26 +49,16 @@ The game is simple: we will put all the players in a battle arena, and then make
   * Shoot. (`shoot`).
 * A player can shoot to try to destroy another player.
 * A player can collect ammo in the moment it steps over it. A new ammo may appear in any moment of the game.
-* If nobody dies in 50 turns, the game will be considered a tie with all the survivors.
 
-# Game Technical Spec.
-
-## Problem.
-We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
-
-## Constraints.
-* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
-* Be safe. A player code should not be able to modify anything other than itself.
-* Be resilient as possible. If a player crashes or stop responding, the show must go on.
-
-## Hypothesis.
+## Game Definitions.
 
 ### Player Definition.
 Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
 
     {
       info: {
-        name: 'javierbyte'
+        name: 'javierbyte',
+        style: 2 // one of the 6 styles (0 to 5)
       },
       ai: function(playerState, enemiesStates, gameEnvironment) {
         // think...
@@ -57,7 +71,7 @@ The AI function will receive [`playerState`](#player-state), `enemiesStates` (ar
   * `north`, `east`, `south` or `west`: To turn to that direction.
   * `shoot`. To shoot if the user has enough ammo.
 
-Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op. 3 no-op in a row and you are dead.
+Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op.
 
 ### Player State.
 Let the *player state* (`playerState`) be an object with a player information like the following:
@@ -84,6 +98,18 @@ Let the *game state* (`gameState`) be an object with the array of all user state
       playerStates: <array of `playerStates`>,
       gameEnvironment: <`gameEnvironment`>
     }
+
+# Game Technical Spec.
+
+## Problem.
+We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
+
+## Constraints.
+* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
+* Be safe. A player code should not be able to modify anything other than itself.
+* Be resilient as possible. If a player crashes or stop responding, the show must go on.
+
+## How this was made.
 
 ### Architecture.
 

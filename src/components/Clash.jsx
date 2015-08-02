@@ -12,7 +12,7 @@ var deepSetState = require('../mixins/deepSetState.js');
 var ClashJS = require('../clashjs/ClashCore.js');
 
 var playerObjects = require('../Players.js');
-var playerArray = _.map(playerObjects, el => el).slice(0, 6);
+var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
 var Clash = React.createClass({
   mixins: [
@@ -24,15 +24,61 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 200
+      speed: 150,
+      winners: playerArray.map(() => 0)
     };
+  },
+
+  componentDidMount() {
+    this.nextTurn();
+  },
+
+  newGame() {
+    this.ClashJS.getState().playerStates.forEach((player, index) => {
+      if (player.isAlive) {
+        let newWinners = this.state.winners;
+        newWinners[index]++;
+
+        this.setState({
+          winners: newWinners
+        });
+      }
+    });
+
+    window.setTimeout(() => {
+      this.ClashJS = new ClashJS(playerArray, this.handleEvent);
+      this.setState({
+        clashjs: this.ClashJS.getState(),
+        shoots: [],
+        speed: 150
+      }, this.nextTurn);
+    }, 1000);
+  },
+
+  nextTurn() {
+    var alivePlayerCount = this.ClashJS.getState().playerStates.reduce((result, el) => {
+      return el.isAlive ? (result + 1) : result;
+    }, 0);
+
+    if (alivePlayerCount < 2) {
+      this.newGame();
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.setState({
+        clashjs: this.ClashJS.nextPly(),
+        speed: this.state.speed > 15 ? parseInt(this.state.speed * 0.98, 10) : 15
+      }, this.nextTurn);
+    }, this.state.speed);
   },
 
   handleEvent(evt, data) {
     console.warn(evt, data, this.state.shoots);
 
     if (evt === 'SHOOT') {
-      let newShoots = this.state.shoots.slice();
+      let newShoots = this.state.shoots;
+
       newShoots.push({
         direction: data.direction,
         origin: data.origin.slice(),
@@ -41,29 +87,19 @@ var Clash = React.createClass({
 
       this.setState({
         shoots: newShoots
-      })
+      });
     }
-  },
-
-  componentDidMount() {
-    this.setState({
-      clashjs: this.ClashJS.nextPly()
-    }, () => {
-      window.setTimeout(() => {
-        this.componentDidMount();
-      }, this.state.speed);
-    });
   },
 
   handleClick() {
     this.setState({
       clashjs: this.ClashJS.nextStep(),
-      speed: Math.max(parseInt(this.state.speed * .8, 10), 1)
+      speed: Math.max(parseInt(this.state.speed * 0.75, 10), 1)
     });
   },
 
   render() {
-    var {clashjs, shoots} = this.state;
+    var {clashjs, shoots, winners} = this.state;
     var {gameEnvironment, playerStates, playerInstances} = clashjs;
 
     return (
@@ -73,17 +109,18 @@ var Clash = React.createClass({
         <Shoots
           shoots={shoots.slice()}
           gridSize={gameEnvironment.gridSize} />
+        <Ammos
+          gridSize={gameEnvironment.gridSize}
+          ammoPosition={gameEnvironment.ammoPosition} />
         <Players
           gridSize={gameEnvironment.gridSize}
           playerInstances={playerInstances}
           playerStates={playerStates} />
-        <Ammos
-          gridSize={gameEnvironment.gridSize}
-          ammoPosition={gameEnvironment.ammoPosition} />
 
         <Stats
           playerInstances={playerInstances}
-          playerStates={playerStates} />
+          playerStates={playerStates}
+          winners={winners} />
 
       </div>
     );

@@ -1,127 +1,33 @@
 <html>
   <head>
-    <title>Sample App</title>
-
-    <style>
-      * {
-        position: relative;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background: url('/static/bg.jpg') no-repeat center #2C3E50;
-        background-size: cover;
-        color: #fff;
-        font: 1em/1.618 Graphik;
-        font-weight: 200;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      b {
-        font-weight: 500;
-      }
-
-      .clash {
-        width: 100vmin;
-        height: 100vmin;
-        margin: 0 auto;
-        background: rgba(255, 255, 255, .03);
-      }
-
-      .clash-tile {
-        display: inline-block;
-      }
-      .clash-tile:nth-child(odd) {
-        background: rgba(255, 255, 255, .03);
-      }
-
-      .clash-ammo {
-        position: absolute;
-        background: url('/static/star.png') no-repeat center / 90%;
-        transition: transform 2s linear;
-      }
-      .clash-ammo:hover {
-        transform: rotate(360deg);
-      }
-
-      .clash-player {
-        position: absolute;
-        top: 0;
-        left: 0;
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        transition: transform .4s;
-      }
-      .clash-player-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        transition: transform .4s;
-      }
-      .clash-player-name {
-        top: -2em;
-        text-align: center;
-      }
-
-      .clash-shoot {
-        position: absolute;
-        height: 1em;
-        width: 100em;
-        margin-top: .5em;
-        margin-left: .5em;
-        transform-origin: top left;
-      }
-
-      .clash-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vmin;
-        height: 100vmin;
-      }
-
-      .stats {
-        position: fixed;
-        top: 0;
-        right: 0;
-        padding: 1em;
-      }
-
-      .animation-shot {
-        animation: shotKeyFrame .25s;
-      }
-      @keyframes shotKeyFrame {
-        0%  {
-          background: #f00;
-        }
-        50% {
-          background: #ff0;
-        },
-        100% {
-          background: transparent;
-        }
-      }
-
-      .animation-glow {
-        animation: glowKeyFrame 1s infinite alternate;
-      }
-      @keyframes glowKeyFrame {
-        0%  {
-          -webkit-filter: saturate(0);
-        }
-        100% {
-          -webkit-filter: saturate(1);
-        }
-      }
-    </style>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'>
+    <title>ClashJS | AI Javascript Battle Game</title>
+    <link rel='stylesheet' href='styles.css'>
+    <link href='favicon.ico' rel='icon' type='image/x-icon' />
   </head>
   <body>
-    <div id='root'>
+    <div id='root'></div>
+
+    <a href='https://github.com/javierbyte/clashjs'><img style='z-index:100;position: fixed; top: 0; left: 0; border: 0;' src='https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67' alt='Fork me on GitHub' data-canonical-src='https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png'></a>
+
+    <div class='instructions'>
+      <b>Clash JS</b>
+      <div>Javascript AI battle game.</div>
+      <div>Here you can see the AI fighting each other.</div>
+      <div>You can learn how to play <a target='_blank' href='https://github.com/javierbyte/clashjs#game-definitions'>here</a>.</div>
+      <i>(Click to speed up things)</i>
     </div>
-    <script src="/static/bundle.js"></script>
+
+    <script src='dist/bundle.js'></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-44329676-12', 'auto');
+      ga('send', 'pageview');
+    </script>
   </body>
 </html>

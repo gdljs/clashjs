@@ -8,10 +8,17 @@ var javierbyte = {
   ai: (playerState, enemiesState, gameEnvironment) => {
     var directionToAmmo;
 
-    if (gameEnvironment.ammoPosition.length) {
-      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+    if (Math.random() > 0.9) return 'shoot';
 
-      if (directionToAmmo !== playerState.direction) return directionToAmmo;
+    if (gameEnvironment.ammoPosition.length) {
+      directionToAmmo = utils.getDirection(
+        playerState.position,
+        gameEnvironment.ammoPosition[0]
+      );
+
+      if (directionToAmmo !== playerState.direction) {
+        return directionToAmmo;
+      }
       return 'move';
     }
 
